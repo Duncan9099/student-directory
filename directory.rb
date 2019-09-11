@@ -19,7 +19,7 @@ def print_header
 end
 # # we print the list of students
 def print(names)
-  names.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
+  names.each.with_index(1) { |student, index| puts "#{index}. #{student[:name]} (#{student[:cohort]} cohort)" }
 end
 # # we print the total number of students
 def print_footer(names)
@@ -36,9 +36,13 @@ def input_students
   # while teh name is not empty, repeat this code
   while !name.empty? do
     # add the student hash to the array
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
+    if name.start_with?("D") && name.length < 12  
+      students << {name: name, cohort: :november}
+      puts "Now we have #{students.count} students"
     # get another name from the user
+    else
+      nil
+    end
     name = gets.chomp
   end
   # return the array of students
