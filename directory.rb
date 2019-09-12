@@ -54,7 +54,9 @@ def input_students
     name = gets.chomp
   end
   # return the array of students
-  students
+  students.sort_by do |hash|
+    hash[:cohort]
+  end
 end
 
 students = input_students
