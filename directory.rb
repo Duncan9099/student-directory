@@ -19,27 +19,27 @@ def input_students
   puts "Please enter the names of the students".center(50, "******")
   puts "To finish, just hit return four times".center(50, "******")
   # students = []
-  name = gets.strip
+  name =  STDIN.gets.chomp
   while !name.empty? do
     cohort_dates = [:january, :march, :june, :august, :november]
 
     puts "\n" + "Please enter the cohort of the student".center(50, "--------")
-    cohort = gets.chomp.downcase.to_sym
+    cohort = STDIN.gets.chomp.downcase.to_sym
 
     while !cohort_dates.include?(cohort) do
       puts "Please re-enter cohort of student"
-      cohort = gets.chomp.downcase.to_sym
+      cohort = STDIN.gets.chomp.downcase.to_sym
     end
 
     puts "\n" + "Please enter the Nationality of the student".center(50, "--------")
-    nationality = gets.chomp
+    nationality = STDIN.gets.chomp
 
     if nationality.empty?
       nationality = "British"
     end
 
     puts "\n" + "Please enter the height of the student in cm".center(50, "--------")
-    height = gets.chomp
+    height = STDIN.gets.chomp
 
     if name.start_with?("D") && name.length < 12
       @students << {name: name, cohort: cohort, nationality: nationality, height: height }
@@ -52,7 +52,7 @@ def input_students
       nil
     end
     puts "\n" + "Please enter the names of the student".center(50, "******")
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
   @students.sort_by do |hash|
     hash[:cohort]
@@ -93,7 +93,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -107,8 +107,8 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort, nationality, height = line.chomp.split(',')
       @students << {name: name, cohort: cohort.to_sym, nationality: nationality, height: height}
@@ -116,7 +116,20 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} does not exist."
+    exit
+  end
+end
+
 @students = []
+try_load_students
 interactive_menu
 
 # students = input_students
